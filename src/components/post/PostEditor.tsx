@@ -1,284 +1,97 @@
+import TabsNavigation from "./../TabsNavigation.tsx";
+import PostContainer from "./../PostContainer.tsx";
+import PostsContainer from "./../PostsContainer.tsx";
+import CreatePost from "./CreatePost";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import {
-  X,
-  Bold,
-  Italic,
-  Heading,
-  Quote,
-  Code,
-  Eye,
-  Save,
-  Send,
-} from "lucide-react";
-import MediaUploader from "./MediaUploader";
-import LinkEmbedder from "./LinkEmbedder";
-import PostPreview from "./PostPreview";
 
+/**
+ * PostEditor Component
+ *
+ * A clean, intuitive post creation interface that allows users to compose content
+ * with an input field and user avatar, matching the Figma design specifications.
+ */
 interface PostEditorProps {
-  onSaveDraft?: (post: PostData) => void;
-  onPublish?: (post: PostData) => void;
-  initialData?: PostData;
-}
-
-export interface PostData {
-  title: string;
-  content: string;
-  tags: string[];
-  media: MediaItem[];
-  links: LinkItem[];
-}
-
-export interface MediaItem {
-  id: string;
-  type: "image" | "video";
-  url: string;
-  caption?: string;
-}
-
-export interface LinkItem {
-  id: string;
-  url: string;
-  title?: string;
-  description?: string;
-  thumbnail?: string;
+  /** User avatar image URL */
+  avatarUrl?: string;
+  /** Placeholder text for the input field */
+  placeholder?: string;
+  /** Callback function when input value changes */
+  onInputChange?: (value: string) => void;
+  /** Current input value */
+  value?: string;
 }
 
 const PostEditor: React.FC<PostEditorProps> = ({
-  onSaveDraft = () => {},
-  onPublish = () => {},
-  initialData = {
-    title: "",
-    content: "",
-    tags: [],
-    media: [],
-    links: [],
-  },
+  avatarUrl = "https://storage.googleapis.com/tempo-public-images/figma-exports%2Fgithub%7C113753687-1749580551990-node-I2028%3A2231%3B2845%3A2189-1749580549574.png",
+  placeholder = "Share your insights ...",
+  onInputChange,
+  value = "",
 }) => {
-  const [activeTab, setActiveTab] = useState<string>("edit");
-  const [postData, setPostData] = useState<PostData>(initialData);
-  const [currentTag, setCurrentTag] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPostData({ ...postData, title: e.target.value });
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onInputChange?.(event.target.value);
   };
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPostData({ ...postData, content: e.target.value });
+  const handleInputClick = () => {
+    setIsModalOpen(true);
   };
 
-  const handleAddTag = () => {
-    if (currentTag.trim() && !postData.tags.includes(currentTag.trim())) {
-      setPostData({ ...postData, tags: [...postData.tags, currentTag.trim()] });
-      setCurrentTag("");
-    }
+  const handlePublish = (postData: any) => {
+    console.log("Post published:", postData);
+    setIsModalOpen(false);
   };
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setPostData({
-      ...postData,
-      tags: postData.tags.filter((tag) => tag !== tagToRemove),
-    });
+  const handleSaveDraft = (postData: any) => {
+    console.log("Draft saved:", postData);
+    setIsModalOpen(false);
   };
 
-  const handleAddMedia = (media: MediaItem) => {
-    setPostData({
-      ...postData,
-      media: [...postData.media, media],
-    });
-  };
-
-  const handleRemoveMedia = (mediaId: string) => {
-    setPostData({
-      ...postData,
-      media: postData.media.filter((item) => item.id !== mediaId),
-    });
-  };
-
-  const handleAddLink = (link: LinkItem) => {
-    setPostData({
-      ...postData,
-      links: [...postData.links, link],
-    });
-  };
-
-  const handleRemoveLink = (linkId: string) => {
-    setPostData({
-      ...postData,
-      links: postData.links.filter((item) => item.id !== linkId),
-    });
-  };
-
-  const insertFormatting = (format: string) => {
-    // This is a placeholder for text formatting functionality
-    // In a real implementation, this would insert markdown or rich text formatting
-    const formatMap: Record<string, { prefix: string; suffix: string }> = {
-      bold: { prefix: "**", suffix: "**" },
-      italic: { prefix: "_", suffix: "_" },
-      heading: { prefix: "# ", suffix: "" },
-      quote: { prefix: "> ", suffix: "" },
-      code: { prefix: "```\n", suffix: "\n```" },
-    };
-
-    if (formatMap[format]) {
-      const { prefix, suffix } = formatMap[format];
-      const updatedContent = postData.content + `${prefix}text${suffix}`;
-      setPostData({ ...postData, content: updatedContent });
-    }
+  const handleClose = () => {
+    setIsModalOpen(false);
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto bg-background border-border">
-      <CardContent className="p-6">
-        <Tabs
-          defaultValue="edit"
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="w-full"
-        >
-          <div className="flex justify-between items-center mb-4">
-            <TabsList>
-              <TabsTrigger value="edit">Edit</TabsTrigger>
-              <TabsTrigger value="preview">Preview</TabsTrigger>
-            </TabsList>
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onSaveDraft(postData)}
+    <div className="w-full px-6 pt-5 pb-6 bg-white rounded-2xl border border-[#d8d6f0] flex flex-col justify-start items-start gap-4 overflow-hidden h-fit">
+      <div className="self-stretch justify-start items-center gap-4 inline-flex">
+        {/* Input Section */}
+        <div className="justify-start items-center flex">
+          <img
+            className="w-10 h-10 rounded-full object-cover"
+            src={avatarUrl}
+            alt="User avatar"
+          />
+        </div>
+        <div className="grow shrink basis-0 h-10 justify-start items-center gap-3 flex">
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogTrigger asChild>
+              <div
+                className="grow shrink basis-0 h-10 p-3 bg-white rounded-lg border border-[#d8d6f0] justify-start items-center flex overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={handleInputClick}
               >
-                <Save className="h-4 w-4 mr-2" />
-                Save Draft
-              </Button>
-              <Button size="sm" onClick={() => onPublish(postData)}>
-                <Send className="h-4 w-4 mr-2" />
-                Publish
-              </Button>
-            </div>
-          </div>
-
-          <TabsContent value="edit" className="space-y-4">
-            <div>
-              <Input
-                placeholder="Post Title"
-                value={postData.title}
-                onChange={handleTitleChange}
-                className="text-xl font-semibold mb-2"
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-2 mb-4">
-              {postData.tags.map((tag) => (
-                <Badge
-                  key={tag}
-                  variant="secondary"
-                  className="flex items-center gap-1"
-                >
-                  {tag}
-                  <button onClick={() => handleRemoveTag(tag)} className="ml-1">
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-              <div className="flex">
-                <Input
-                  placeholder="Add tag"
-                  value={currentTag}
-                  onChange={(e) => setCurrentTag(e.target.value)}
-                  className="w-32 h-7 text-xs"
-                  onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleAddTag}
-                  className="h-7 px-2"
-                >
-                  Add
-                </Button>
+                <div className="grow shrink basis-0 text-[#707070] text-sm font-normal font-poppins leading-none">
+                  {placeholder}
+                </div>
               </div>
-            </div>
-
-            <div className="flex flex-wrap gap-2 mb-4 p-1 border border-border rounded-md">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => insertFormatting("bold")}
-              >
-                <Bold className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => insertFormatting("italic")}
-              >
-                <Italic className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => insertFormatting("heading")}
-              >
-                <Heading className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => insertFormatting("quote")}
-              >
-                <Quote className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => insertFormatting("code")}
-              >
-                <Code className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <Textarea
-              placeholder="Write your post content here..."
-              value={postData.content}
-              onChange={handleContentChange}
-              className="min-h-[200px]"
-            />
-
-            <Separator className="my-4" />
-
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Media</h3>
-              <MediaUploader
-                onMediaUploaded={handleAddMedia}
-                onMediaRemoved={handleRemoveMedia}
-                existingMedia={postData.media}
+            </DialogTrigger>
+            <DialogContent className="max-w-[850px] p-0 border-none bg-transparent">
+              <CreatePost
+                avatarUrl={avatarUrl}
+                onPublish={handlePublish}
+                onSaveDraft={handleSaveDraft}
+                onClose={handleClose}
               />
-            </div>
+            </DialogContent>
+          </Dialog>
+        </div>
 
-            <Separator className="my-4" />
-
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Links</h3>
-              <LinkEmbedder
-                onLinkAdded={handleAddLink}
-                onLinkRemoved={handleRemoveLink}
-                existingLinks={postData.links}
-              />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="preview">
-            <PostPreview postData={postData} />
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+        {/* Avatar Section */}
+      </div>
+      <TabsNavigation className=" w-full" />
+      <PostContainer />
+      <PostsContainer className="gap-y-3" />
+    </div>
   );
 };
 
