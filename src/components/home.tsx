@@ -5,6 +5,7 @@ import WelcomeBanner from "./WelcomeBanner.tsx";
 import PostEditor from "./post/PostEditor.tsx";
 import React from "react";
 import SidePanel from "./SidePanel.tsx";
+import EditPost from "./post/EditPost";
 import ProfileCompletionBanner from "./ProfileCompletionBanner.tsx";
 function Home() {
   return (

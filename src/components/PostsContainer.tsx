@@ -6,8 +6,22 @@ import {
   ThumbsDown,
   MessageCircle,
   MoreVertical,
+  Edit,
+  Bookmark,
+  Share,
+  EyeOff,
+  Trash2,
 } from "lucide-react";
 import PostWithComments from "./PostWithComments";
+import EditPost from "./post/EditPost";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 /**
  * PostsContainer Component
@@ -137,6 +151,8 @@ const PostsContainer: React.FC<PostsContainerProps> = ({
 }) => {
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const formatNumber = (num: number) => {
     if (num >= 1000) {
@@ -159,6 +175,21 @@ const PostsContainer: React.FC<PostsContainerProps> = ({
       setSelectedPostId(null);
       setIsTransitioning(false);
     }, 300);
+  };
+
+  const handleEditPost = (postId: string) => {
+    setEditingPostId(postId);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingPostId(null);
+  };
+
+  const handleSaveAndPublish = (postData: any) => {
+    console.log("Post updated:", postData);
+    handleCloseEditModal();
   };
 
   if (selectedPostId) {
@@ -233,9 +264,42 @@ const PostsContainer: React.FC<PostsContainerProps> = ({
                   </span>
                 </div>
               </div>
-              <button className="w-6 h-6 py-[3px] flex justify-center items-center hover:bg-gray-100 rounded">
-                <MoreVertical className="w-4 h-4 text-gray-400" />
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="w-6 h-6 py-[3px] flex justify-center items-center hover:bg-gray-100 rounded">
+                    <MoreVertical className="w-4 h-4 text-gray-400" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem
+                    className="flex items-center justify-between cursor-pointer"
+                    onClick={() => handleEditPost(post.id)}
+                  >
+                    <span>Edit</span>
+                    <Edit className="w-4 h-4" style={{ color: "#9189A8" }} />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center justify-between cursor-pointer">
+                    <span>Save to Draft</span>
+                    <Bookmark
+                      className="w-4 h-4"
+                      style={{ color: "#9189A8" }}
+                    />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center justify-between cursor-pointer">
+                    <span>Share</span>
+                    <Share className="w-4 h-4" style={{ color: "#9189A8" }} />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center justify-between cursor-pointer">
+                    <span>Hide</span>
+                    <EyeOff className="w-4 h-4" style={{ color: "#9189A8" }} />
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="flex items-center justify-between cursor-pointer text-red-600 focus:text-red-600">
+                    <span>Delete Post</span>
+                    <Trash2 className="w-4 h-4" style={{ color: "#9189A8" }} />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -370,9 +434,54 @@ const PostsContainer: React.FC<PostsContainerProps> = ({
                           )}
                         </div>
                       </div>
-                      <button className="w-6 h-6 py-[3px] flex justify-center items-center hover:bg-gray-100 rounded">
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
-                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="w-6 h-6 py-[3px] flex justify-center items-center hover:bg-gray-100 rounded">
+                            <MoreVertical className="w-4 h-4 text-gray-400" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem
+                            className="flex items-center justify-between cursor-pointer"
+                            onClick={() => handleEditPost(post.id)}
+                          >
+                            <span>Edit</span>
+                            <Edit
+                              className="w-4 h-4"
+                              style={{ color: "#9189A8" }}
+                            />
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="flex items-center justify-between cursor-pointer">
+                            <span>Save to Draft</span>
+                            <Bookmark
+                              className="w-4 h-4"
+                              style={{ color: "#9189A8" }}
+                            />
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="flex items-center justify-between cursor-pointer">
+                            <span>Share</span>
+                            <Share
+                              className="w-4 h-4"
+                              style={{ color: "#9189A8" }}
+                            />
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="flex items-center justify-between cursor-pointer">
+                            <span>Hide</span>
+                            <EyeOff
+                              className="w-4 h-4"
+                              style={{ color: "#9189A8" }}
+                            />
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="flex items-center justify-between cursor-pointer text-red-600 focus:text-red-600">
+                            <span>Delete Post</span>
+                            <Trash2
+                              className="w-4 h-4"
+                              style={{ color: "#9189A8" }}
+                            />
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                     {/* Comment Content */}
                     <div className="flex flex-col gap-1">
@@ -400,6 +509,29 @@ const PostsContainer: React.FC<PostsContainerProps> = ({
           </div>
         </div>
       ))}
+
+      {/* Edit Post Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="max-w-5xl p-0 border-none bg-black/80 backdrop-blur-sm">
+          <div className="flex items-center justify-center min-h-screen p-4">
+            {editingPostId && (
+              <EditPost
+                avatarUrl={
+                  posts.find((p) => p.id === editingPostId)?.author.avatar
+                }
+                initialTitle={posts.find((p) => p.id === editingPostId)?.title}
+                initialContent={
+                  posts.find((p) => p.id === editingPostId)?.content
+                }
+                initialTags={posts.find((p) => p.id === editingPostId)?.tags}
+                onSaveAndPublish={handleSaveAndPublish}
+                onCancel={handleCloseEditModal}
+                onClose={handleCloseEditModal}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
