@@ -100,11 +100,11 @@ export default function SidePanel({ className = "" }: SidePanelProps) {
               className={`self-stretch py-3 flex justify-start items-start gap-4 ${
                 index < events.length - 1
                   ? "border-b border-[#d8d6f0]"
-                  : " gap-x-3"
+                  : " gap-x-3 py-3.5"
               }`}
             >
-              <div className="w-5 h-5 flex justify-center items-center flex-shrink-0">
-                <img src={event.icon} alt="Calendar icon" className="h-4 w-4" />
+              <div className="flex justify-center items-center flex-shrink-0 h-6 w-6">
+                <img src={event.icon} alt="Calendar icon" className="h-6 w-6" />
               </div>
               <div className="grow flex flex-col justify-start items-start gap-1 gap-y-1.5">
                 <div className="self-stretch text-[#1c1530] text-sm font-normal font-open-sans leading-tight">

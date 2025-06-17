@@ -17,7 +17,7 @@ export default function WelcomeBanner({
   description = "Get career help from the community ...",
 }: WelcomeBannerProps) {
   return (
-    <div className="bg-white px-10 py-6 rounded-[20px] flex gap-6 h-fit justify-start flex-col items-center w-full">
+    <div className="bg-white py-6 rounded-[20px] flex gap-6 h-fit justify-start flex-col items-center w-full px-6">
       {/* Decorative vertical bar */}
       {/* Content section */}
       <div className="flex-1 flex flex-col justify-center h-fit w-full">

@@ -4,6 +4,7 @@ import SidebarNavigation from "./SidebarNavigation.tsx";
 import WelcomeBanner from "./WelcomeBanner.tsx";
 import PostEditor from "./post/PostEditor.tsx";
 import React from "react";
+import SidePanel from "./SidePanel.tsx";
 import ProfileCompletionBanner from "./ProfileCompletionBanner.tsx";
 function Home() {
   return (
@@ -18,6 +19,7 @@ function Home() {
           <WelcomeBanner className=" h-screen w-screen justify-center items-start static">
             <PostEditor />
           </WelcomeBanner>
+          <SidePanel className="h-screen w-5/12">SidePanel content</SidePanel>
         </div>
       </div>
     </div>

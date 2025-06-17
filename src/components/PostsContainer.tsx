@@ -309,15 +309,7 @@ const PostsContainer: React.FC<PostsContainerProps> = ({
                         <ThumbsUp className="w-4 h-4 text-[#9189A8]" />
                       </div>
                     </div>
-                    <div className="w-[3px] h-[3px] bg-[#c0bed8] rounded-full"></div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[#9189A8] text-sm font-normal font-poppins leading-none gap-x-1">
-                        {post.reactions.dislikes}
-                      </span>
-                      <div className="w-5 h-5 px-[1.67px] py-[2.92px] flex justify-center items-center">
-                        <ThumbsDown className="w-4 h-4 text-[#9189A8]" />
-                      </div>
-                    </div>
+
                     <div className="w-[3px] h-[3px] bg-[#c0bed8] rounded-full"></div>
                     <div
                       className="flex items-center gap-2 cursor-pointer transition-all duration-200 hover:bg-[#342985]/10 rounded px-2 py-1 group"
@@ -389,7 +381,7 @@ const PostsContainer: React.FC<PostsContainerProps> = ({
                           {post.bestComment.content.includes("Read more") ? (
                             <>
                               {post.bestComment.content.split("Read more")[0]}
-                              <span className="text-[#342985] text-base font-bold font-poppins underline leading-tight">
+                              <span className="text-[#342985] text-base font-bold font-poppins underline leading-tight text-sm">
                                 Read more
                               </span>
                               .
